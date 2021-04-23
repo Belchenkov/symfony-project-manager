@@ -18,6 +18,15 @@ docker-pull:
 docker-build:
 	docker-compose up --build  -d
 
+manager-init: manager-composer-install
+
+manager-clear:
+	docker run --rm -v ${PWD}/manager:/app --workdir=/app alpine rm -f .ready
+
+manager-composer-install:
+	docker-compose run --rm manager-php-cli composer install
+
+
 push-production:
 	docker push ${REGISTRY_ADDRESS}/manager-nginx:${IMAGE_TAG}
 	docker push ${REGISTRY_ADDRESS}/manager-php-fpm:${IMAGE_TAG}
