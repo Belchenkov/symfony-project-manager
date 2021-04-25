@@ -2,6 +2,7 @@ up: docker-up
 down: docker-down
 restart: docker-down docker-up
 init: docker-down-clear docker-pull docker-build docker-up
+test: manager-test
 
 docker-up:
 	docker-compose up -d
@@ -26,6 +27,12 @@ manager-clear:
 manager-composer-install:
 	docker-compose run --rm manager-php-cli composer install
 
+manager-assets-install:
+	docker-compose run --rm manager-node yarn install
+	docker-compose run --rm manager-node npm rebuild node-sass
+
+manager-test:
+	docker-compose run --rm manager-php-cli php bin/phpunit
 
 push-production:
 	docker push ${REGISTRY_ADDRESS}/manager-nginx:${IMAGE_TAG}

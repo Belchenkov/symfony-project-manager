@@ -23,3 +23,7 @@ WORKDIR /app
 
 COPY --from=php-cli-builder /app ./
 COPY ./ ./
+
+ENV APP_ENV prod
+
+RUN php bin/console assets:install
