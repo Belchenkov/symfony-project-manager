@@ -16,6 +16,8 @@ services:
       dockerfile: php-fpm.docker
     volumes:
       - ./manager:/app
+    depends_on:
+      - manager-postgres
   manager-php-cli:
     build:
       context: ./manager/docker/development
@@ -24,6 +26,8 @@ services:
       - ./manager:/app
       - composer:/root/.composer/cache
     tty: true
+    depends_on:
+      - manager-postgres
   manager-postgres:
     image: postgres:13-alpine
     volumes:
@@ -33,8 +37,7 @@ services:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: app
     ports:
-    - "54321:5432"
-
+      - "54321:5432"
 
 volumes:
   manager-postgres:
