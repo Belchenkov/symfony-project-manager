@@ -16,6 +16,7 @@ class UserBuilder
     private $email;
     private $hash;
     private $token;
+    private $confirmed;
 
     private $network;
     private $identity;
@@ -24,6 +25,13 @@ class UserBuilder
     {
         $this->id = Id::next();
         $this->date = new \DateTimeImmutable();
+    }
+
+    public function confirmed(): self
+    {
+        $clone = clone $this;
+        $clone->confirmed = true;
+        return $clone;
     }
 
     public function viaEmail(Email $email = null, string $hash = null, string $token = null): self
@@ -56,6 +64,10 @@ class UserBuilder
                 $this->hash,
                 $this->token
             );
+
+            if ($this->confirmed) {
+                $user->confirmSignUp();
+            }
         }
 
         if ($this->network) {
