@@ -63,8 +63,7 @@ class UserRepository
                 ->select('COUNT(t.id)')
                 ->andWhere('t.email = :email')
                 ->setParameter(':email', $email->getValue())
-                ->getQuery()
-                ->getSingleScalarResult() > 0;
+                ->getQuery()->getSingleScalarResult() > 0;
     }
 
     public function hasByNetworkIdentity(string $network, string $identity): bool

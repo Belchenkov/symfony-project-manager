@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Model\User\UseCase\SignUp\Confirm;
+namespace App\Model\User\UseCase\Reset\Reset;
 
 class Command
 {
@@ -10,6 +10,10 @@ class Command
      * @var string
      */
     public $token;
+    /**
+     * @var string
+     */
+    public $password;
 
     public function __construct(string $token)
     {
