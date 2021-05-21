@@ -46,6 +46,9 @@ manager-assets-install:
 	docker-compose run --rm manager-node npm install
 	docker-compose run --rm manager-node npm rebuild node-sass
 
+manager-assets-dev:
+	docker-compose run --rm manager-node npm run dev
+
 manager-test:
 	docker-compose run --rm manager-php-cli php bin/phpunit
 
