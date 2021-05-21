@@ -1,7 +1,7 @@
 up: docker-up
 down: docker-down
 restart: docker-down docker-up
-init: docker-down-clear docker-pull docker-build docker-up
+init: docker-down-clear manager-clear docker-pull docker-build docker-up manager-init
 test: manager-test
 
 docker-up:
@@ -19,10 +19,13 @@ docker-pull:
 docker-build:
 	docker-compose up --build  -d
 
-manager-init: manager-composer-install manager-assets-install manager-wait-db manager-migrations manager-fixtures
+manager-init: manager-composer-install manager-assets-install manager-wait-db manager-migrations manager-fixtures manager-ready
 
 manager-clear:
 	docker run --rm -v ${PWD}/manager:/app --workdir=/app alpine rm -f .ready
+
+manager-ready:
+	docker run --rm -v ${PWD}/manager:/app --workdir=/app alpine touch .ready
 
 manager-composer-install:
 	docker-compose run --rm manager-php-cli composer install
