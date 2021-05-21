@@ -19,7 +19,7 @@ docker-pull:
 docker-build:
 	docker-compose up --build  -d
 
-manager-init: manager-composer-install manager-wait-db manager-migrations manager-fixtures
+manager-init: manager-composer-install manager-assets-install manager-wait-db manager-migrations manager-fixtures
 
 manager-clear:
 	docker run --rm -v ${PWD}/manager:/app --workdir=/app alpine rm -f .ready
@@ -43,7 +43,7 @@ manager-fixtures:
 	docker-compose run --rm manager-php-cli php bin/console doctrine:fixtures:load --no-interaction
 
 manager-assets-install:
-	docker-compose run --rm manager-node yarn install
+	docker-compose run --rm manager-node npm install
 	docker-compose run --rm manager-node npm rebuild node-sass
 
 manager-test:
