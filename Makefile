@@ -30,6 +30,9 @@ manager-ready:
 manager-composer-install:
 	docker-compose run --rm manager-php-cli composer install
 
+manager-composer-update:
+	docker-compose run --rm manager-php-cli composer update
+
 manager-make-migration:
 	docker-compose run --rm manager-php-cli php bin/console doctrine:migrations:diff
 
