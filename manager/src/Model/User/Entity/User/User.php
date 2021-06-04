@@ -17,8 +17,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class User
 {
-    private const STATUS_WAIT = 'wait';
+    public const STATUS_WAIT = 'wait';
     public const STATUS_ACTIVE = 'active';
+    public const STATUS_BLOCKED = 'blocked';
 
     /**
      * @ORM\Column(type="user_user_id")
@@ -90,6 +91,21 @@ class User
         $this->networks = new ArrayCollection();
     }
 
+    public static function create(Id $id, \DateTimeImmutable $date, Name $name, Email $email, string $hash): self
+    {
+        $user = new self($id, $date, $name);
+        $user->email = $email;
+        $user->passwordHash = $hash;
+        $user->status = self::STATUS_ACTIVE;
+        return $user;
+    }
+
+    public function edit(Email $email, Name $name): void
+    {
+        $this->name = $name;
+        $this->email = $email;
+    }
+
     public static function signUpByEmail(
         Id $id,
         \DateTimeImmutable $date,
@@ -139,6 +155,20 @@ class User
             }
         }
         $this->networks->add(new Network($this, $network, $identity));
+    }
+
+    public function detachNetwork(string $network, string $identity): void
+    {
+        foreach ($this->networks as $existing) {
+            if ($existing->isFor($network, $identity)) {
+                if (!$this->email && $this->networks->count() === 1) {
+                    throw new \DomainException('Unable to detach the last identity.');
+                }
+                $this->networks->removeElement($existing);
+                return;
+            }
+        }
+        throw new \DomainException('Network is not attached.');
     }
 
     public function requestPasswordReset(ResetToken $token, \DateTimeImmutable $date): void
@@ -204,6 +234,23 @@ class User
         $this->name = $name;
     }
 
+    public function activate(): void
+    {
+        if ($this->isActive()) {
+            throw new \DomainException('User is already active.');
+        }
+        $this->status = self::STATUS_ACTIVE;
+    }
+
+    public function block(): void
+    {
+        if ($this->isBlocked()) {
+            throw new \DomainException('User is already blocked.');
+        }
+        $this->status = self::STATUS_BLOCKED;
+    }
+
+
     public function isWait(): bool
     {
          return $this->status === self::STATUS_WAIT;
@@ -212,6 +259,11 @@ class User
     public function isActive(): bool
     {
          return $this->status === self::STATUS_ACTIVE;
+    }
+
+    public function isBlocked(): bool
+    {
+        return $this->status === self::STATUS_BLOCKED;
     }
 
     public function getId(): Id
@@ -262,6 +314,11 @@ class User
     public function getRole(): Role
     {
         return $this->role;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
     }
 
     /**
