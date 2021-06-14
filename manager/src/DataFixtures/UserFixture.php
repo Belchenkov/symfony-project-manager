@@ -46,7 +46,6 @@ class UserFixture extends Fixture
             new Email('user@app.test'),
             $hash
         );
-
         $manager->persist($confirmed);
         $this->setReference(self::REFERENCE_USER, $confirmed);
 
@@ -56,6 +55,7 @@ class UserFixture extends Fixture
             $hash
         );
         $manager->persist($admin);
+        $this->setReference(self::REFERENCE_ADMIN, $admin);
 
         $manager->flush();
     }
