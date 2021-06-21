@@ -6,6 +6,7 @@ namespace App\Controller\Work\Projects\Project\Settings;
 
 use App\Annotation\Guid;
 use App\Model\Work\Entity\Projects\Project\Department\Id;
+use App\ReadModel\Work\Projects\Project\DepartmentFetcher;
 use App\Model\Work\Entity\Projects\Project\Project;
 use App\Model\Work\UseCase\Projects\Project\Department\Create;
 use App\Model\Work\UseCase\Projects\Project\Department\Edit;
@@ -35,13 +36,14 @@ class DepartmentsController extends AbstractController
     /**
      * @Route("", name="")
      * @param Project $project
+     * @param DepartmentFetcher $departments
      * @return Response
      */
-    public function index(Project $project): Response
+    public function index(Project $project, DepartmentFetcher $departments): Response
     {
         return $this->render('app/work/projects/project/settings/departments/index.html.twig', [
             'project' => $project,
-            'departments' => $project->getDepartments(),
+            'departments' => $departments->allOfProject($project->getId()->getValue()),
         ]);
     }
 
